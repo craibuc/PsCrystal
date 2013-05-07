@@ -1,4 +1,9 @@
-crystal-shell
-=============
+# PsCrystal
 
-PowerShell scripts and modules to help automate Crystal Reports tasks
+PowerShell modules to help automate Crystal Reports tasks.
+
+# Roadmap
+
+ - Examples
+ - Documentation
+ - Add to PsGet
