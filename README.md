@@ -6,4 +6,5 @@ PowerShell modules to help automate Crystal Reports tasks.
 
  - Examples
  - Documentation
+ - Unit tests (using Pester)
  - Add to PsGet
