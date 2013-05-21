@@ -11,27 +11,27 @@ process {
 
     $rpt = $null
 	
-	$server = Read-Host -Prompt "Server"
-	$user = Read-Host -Prompt "Account"
-	$securePassword = Read-Host -AsSecureString -Prompt "Password"
-	
-    try {
+	try {
 
-        $rptFile = Convert-Path ".\Oracle.12.rpt"
+        $rptPath = Convert-Path ".\Oracle.12.rpt"
         
         # TODO: test for presence of file
         
         Write-Verbose "$($MyInvocation.MyCommand.Name):: Processing $rptFile"
         
         $rpt = Open-Report -path $rptFile -verbose #| Out-null
-        
-		$password = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
-			[Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword))
-			
-        $rpt = Set-Credentials $rpt -svr $server -acct $account -pwd $password
-        
-        $rpt = Export-Report $rpt -path ($rptFile -replace '.rpt', '.pdf')  -verbose
-                        
+		
+		# TODO: prompt for credentials based on values in report
+
+		$server = Read-Host -Prompt "Server"
+		$account = Read-Host -Prompt "Account"
+		$securePassword = Read-Host -AsSecureString -Prompt "Password"
+		$bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword)
+		$password = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+
+        $rpt = Set-Credentials $rpt -svr $server -acct $account -pwd $password        
+        $rpt = Export-Report $rpt -path ($rptPath -replace ".rpt", ("." + (Get-Date -f "yyyyMMdd-HHmmss") + ".pdf"))  -verbose
+
     }
     catch {
         write-host $_.Exception.Message
