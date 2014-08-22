@@ -35,9 +35,7 @@ function Get-Definition {
 	    catch [Exception] {
 	        write-host $_.Exception
 	    }
-	    finally {
-	        return $def
-	    }
+        return $def
 
 	}
 	
@@ -203,9 +201,7 @@ function Get-ParameterFields {
 	    catch [Exception] {
 	        write-host $_.Exception
 	    }
-	    finally {
-	        return $PFs
-	    }
+        return $PFs
     }
 	
 	end {Write-Verbose "$($MyInvocation.MyCommand.Name)::End"}
