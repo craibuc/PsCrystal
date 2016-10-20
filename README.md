@@ -35,13 +35,6 @@ PS ~\Desktop> Get-ChildItem .\Reports *.rpt -Recurse | Get-DataDefinition |
 PS ~\Desktop> Get-ChildItem .\reports *.rpt -Recurse | Get-DataDefinition | Select title, filepath -ExpandProperty links | ConvertTo-Csv -NoTypeInformation | Out-File ~\Desktop\reports.csv
 ```
 
-# Roadmap
-
- - Examples
- - Documentation
- - Unit tests (using Pester)
- - Add to PsGet
-
 # Personnel
 
 ## Author
