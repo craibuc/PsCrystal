@@ -49,6 +49,45 @@ PS ~\Desktop\Reports> Get-ChildItem . *.rpt -Recurse | Get-DataDefinition |
 		ConvertTo-Csv -NoTypeInformation | 
 		Out-File .\reports.links.csv
 ```
+# Installation
+
+- Install PowerShell
+- Set your execution policy to 'RemoteSigned':
+```powershell
+# test its current value
+PS > Get-ExecutionPolicy
+None
+
+# set to 'RemoteSigned'; requires administrative rights
+PS > Set-ExecutionPolicy 'RemoteSigned'
+```
+
+## Git
+Assuming that you have Git installed:
+
+```powershell
+# change to your profile's PowerShell directory
+PS> cd ~\Documents\WindowsPowerShell
+
+# create a Modules folder
+PS> mkdir Modules
+
+# change to this directory
+PS> cd Modules
+
+# clone the project to Modules directory (it will create the PsCrystal folder and contents)
+PS> git clone git@github.com:craibuc/PsCrystal.git
+
+# import the module into current PowerShell session
+PS> Import-Module PsCrystal
+
+```
+
+## Manually
+
+```powershell
+TODO
+```
 
 # Personnel
 
