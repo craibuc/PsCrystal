@@ -17,21 +17,40 @@ PS > Open-Report \path\to\report.rpt
 # open the report, then close it
 PS > Open-Report \path\to\report.rpt | Close-Report
 ```
+# Examples
 
-## Get-DataDefinition
+## Extract the unique list of tables in a report
+~~~~powershell
+PS> Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
-### Extract SQL from the reports' command object
+    $_.Database.Tables | Select-Object location -Expand location
+    $_.Subreports | % { $_.Database.Tables | Select-Object location -Expand location }
+
+} | Select-Object location -Unique | Sort-Object Location
+~~~
+
+## Extract SQL from the reports' command object
 
 ```powershell
-# extract the SQL queries from the RPT files in the specified directory and save them in a SQL file named like the RPT file
-PS ~\Desktop\Reports> Get-ChildItem . *.rpt -Recurse | Get-DataDefinition | 
-		Foreach { $fp= $_.FilePath; $_.Queries | 
-			Foreach { $_.Query | 
-				Out-File ($fp -Replace '.rpt', '.sql')
-			}
-		}
+# extract the SQL queries from the RPT files in the specified directory
+PS> Get-ChildItem '\path\to\reports' *.rpt | Open-Report -Verbose | % {
+    # save for later
+    $report = $_
+
+    $_.ReportClientDocument.DataDefController.Database.Tables | 
+        Where-Object { $_.ClassName -Eq 'CrystalReports.CommandTable' } |
+        Select-Object @{Name='Title';Expression={$report.SummaryInfo.Title}}, @{Name='FilePath';Expression={$report.FilePath}}, @{Name='Subreport';Expression={$null}}, @{Name='CommandAlias';Expression={$_.Alias}}, @{Name='Query'; Expression={$_.CommandText}}
+
+    $_.Subreports | % { 
+            # save for later
+            $subrepot = $_
+            $_.ReportClientDocument.DataDefController.Database.Tables
+        } |
+        Where-Object { $_.ClassName -Eq 'CrystalReports.CommandTable' } |
+        Select-Object @{Name='Title';Expression={$report.SummaryInfo.Title}}, @{Name='FilePath';Expression={$report.FilePath}}, @{Name='Subreport'; Expression={$subreport.Name}}, @{Name='CommandAlias';Expression={$_.Alias}}, @{Name='Query'; Expression={$_.CommandText}}
+}
 ```
-### Extract the tables and field from the reports
+## Extract the tables and field from the reports
 
 ```powershell
 # extract the fields from the RPT files in the specified directory and save them in a single CSV file
@@ -40,7 +59,7 @@ PS ~\Desktop\Reports> Get-ChildItem . *.rpt -Recurse | Get-DataDefinition |
 		ConvertTo-Csv -NoTypeInformation | 
 		Out-File .\reports.fields.csv
 ```
-### Extract the table linking from the reports
+## Extract the table linking from the reports
 
 ```powershell
 # extract the linking from the RPT files in the specified directory and save them in a single CSV file
