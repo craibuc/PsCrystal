@@ -50,6 +50,45 @@ PS> Get-ChildItem '\path\to\reports' *.rpt | Open-Report -Verbose | % {
         Select-Object @{Name='Title';Expression={$report.SummaryInfo.Title}}, @{Name='FilePath';Expression={$report.FilePath}}, @{Name='Subreport'; Expression={$subreport.Name}}, @{Name='CommandAlias';Expression={$_.Alias}}, @{Name='Query'; Expression={$_.CommandText}}
 }
 ```
+
+## Extract database connection information
+
+~~~powershell
+Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
+
+    $report = $_
+
+    $_.Database.Tables | % {
+        [PsCustomObject]@{
+            FilePath=$report.FilePath
+            FileName=(Split-Path $report.FilePath -Leaf)
+            Subreport=$null
+            TableName=$_.Name
+            ServerName=$_.LogOnInfo.ConnectionInfo.ServerName
+            UserID=$_.LogOnInfo.ConnectionInfo.UserID
+        }
+    }
+
+    $_.Subreports | % { 
+        
+        $subreport = $_
+
+        $_.Database.Tables | % {
+            [PsCustomObject]@{
+                FilePath=$report.FilePath
+                FileName=(Split-Path $report.FilePath -Leaf)
+                Subreport=$subreport.Name
+                TableName=$_.Name
+                ServerName=$_.LogOnInfo.ConnectionInfo.ServerName
+                UserID=$_.LogOnInfo.ConnectionInfo.UserID
+            }
+        }
+        
+    }
+
+} | Sort-Object FileName,TableName | Select-Object FileName,Subreport,TableName,ServerName,UserID | Format-Table
+~~~
+
 ## Extract the tables and field from the reports
 
 ```powershell
