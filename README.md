@@ -96,15 +96,14 @@ Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 # extract the fields from the RPT files in the specified directory and save them in a single CSV file
 Get-ChildItem 'path\to\reports' *.rpt -Recurse | % {
     $report = $_
-    $_.ReportClientDocument.Database.Tables | % {
-        [PsCustomObject]@{Name=$report.Name;Subreport=$null;ClassName=$_.ClassName;Name=$_.Name} 
-    } # /Tables
+
+    # TODO
 
     $_.Subreports | % {
         $subreport = $_
-	$_.Database.Tables | % {
-    	    [PsCustomObject]@{Name=$report.Name;Subreport=$subreport.Name;ClassName=$_.ClassName;Name=$_.Name}
-	} # /Tables
+	
+	# TODO
+
     } # /Subreports
     
 } | ConvertTo-Csv -NoTypeInformation | Out-File ~\Desktop\reports.fields.csv
