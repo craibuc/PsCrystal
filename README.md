@@ -29,6 +29,19 @@ PS> Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 } | Select-Object location -Unique | Sort-Object Location
 ```
 
+## Extract the contents of the reports' SQL-expression fields
+
+```powershell
+import-module PsCrystal
+
+ Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
+
+    $_.DataDefinition.SQLExpressionFields | Select-Object name, text
+    $_.Subreports | % { $_.DataDefinition.SQLExpressionFields | Select-Object name, text }
+
+} | Format-List
+```
+
 ## Extract SQL from the reports' command objects
 
 ```powershell
