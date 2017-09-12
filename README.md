@@ -20,14 +20,14 @@ PS > Open-Report \path\to\report.rpt | Close-Report
 # Examples
 
 ## Extract the unique list of tables in a report
-~~~~powershell
+```powershell
 PS> Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
     $_.Database.Tables | Select-Object location -Expand location
     $_.Subreports | % { $_.Database.Tables | Select-Object location -Expand location }
 
 } | Select-Object location -Unique | Sort-Object Location
-~~~
+```
 
 ## Extract SQL from the reports' command objects
 
@@ -53,7 +53,7 @@ PS> Get-ChildItem '\path\to\reports' *.rpt | Open-Report -Verbose | % {
 
 ## Extract database connection information
 
-~~~powershell
+```powershell
 Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
     $report = $_
@@ -87,7 +87,7 @@ Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
     }
 
 } | Sort-Object FileName,TableName | Select-Object FileName,Subreport,TableName,ServerName,UserID | Format-Table
-~~~
+```
 
 
 ## Extract the tables and field from the reports
