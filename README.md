@@ -21,7 +21,7 @@ PS > Open-Report \path\to\report.rpt | Close-Report
 
 ## Extract the unique list of tables in a report
 ```powershell
-PS> Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
+PS > Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
     $_.Database.Tables | Select-Object location -Expand location
     $_.Subreports | % { $_.Database.Tables | Select-Object location -Expand location }
@@ -46,7 +46,7 @@ import-module PsCrystal
 
 ```powershell
 # extract the SQL queries from the RPT files in the specified directory
-PS> Get-ChildItem '\path\to\reports' *.rpt | Open-Report -Verbose | % {
+PS > Get-ChildItem '\path\to\reports' *.rpt | Open-Report -Verbose | % {
     # save for later
     $report = $_
 
@@ -67,7 +67,7 @@ PS> Get-ChildItem '\path\to\reports' *.rpt | Open-Report -Verbose | % {
 ## Extract database connection information
 
 ```powershell
-Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
+PS > Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
     $report = $_
 
@@ -107,7 +107,7 @@ Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
 ```powershell
 # extract the fields from the RPT files in the specified directory and save them in a single CSV file
-Get-ChildItem 'path\to\reports' *.rpt -Recurse | % {
+PS > Get-ChildItem 'path\to\reports' *.rpt -Recurse | % {
     $report = $_
 
     # TODO
@@ -189,11 +189,20 @@ Get-ChildItem 'path\to\reports' *.rpt -Recurse | % {
 
 ```powershell
 # extract the linking from the RPT files in the specified directory and save them in a single CSV file
-PS ~\Desktop\Reports> Get-ChildItem . *.rpt -Recurse | Get-DataDefinition | 
+PS > ~\Desktop\Reports> Get-ChildItem . *.rpt -Recurse | Get-DataDefinition | 
 		Select title, filepath -ExpandProperty links | 
 		ConvertTo-Csv -NoTypeInformation | 
 		Out-File .\reports.links.csv
 ```
+
+## Resize the fields in the Detail section to be 0.5"
+
+Process all the reports on the user's Desktop folder, resize them to the default width (720 twips/0.5"), and save them to the same location with a timestamp added to the name.
+
+```powershell
+PS > Get-ChildItem -Path ~/Desktop/ -Filter "*.rpt " | Open-Report | Resize-Field | Out-Report
+```
+
 # Installation
 
 - Install PowerShell
