@@ -9,7 +9,10 @@
     A CrystalDecisions.CrystalReports.Engine.ReportDocument created by using Open-Report.
 
 .PARAMETER FieldWidth
-    The desired width of each field in inches, defaults to 720 twips (0.5 inches).
+    The desired width of each field in twips; defaults to 720 (0.5 inches).
+
+.PARAMETER FieldWidth
+    The desired distance between each field in twips; defaults to 0.
 
 .EXAMPLE
     Open-Report $rpt | Resize-Field
@@ -35,14 +38,16 @@ function Resize-Field
         [Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)]
         [CrystalDecisions.CrystalReports.Engine.ReportDocument]$ReportDocument,
 
-        [int]$FieldWidth = 720
+        [int]$FieldWidth = 720,
+
+        [int]$Spacing = 0
     )
 
     begin
     { 
         Write-Debug "FieldWidth: $FieldWidth" 
-        $TPI = 1440
-        $TPC = 567
+        $TPI = 1440 # twips/inch
+        $TPC = 567 # twips/centimeter
     }
 
     process
@@ -63,7 +68,7 @@ function Resize-Field
             # process each ReportObject in the (Detail) Section
             $_.ReportObjects | ForEach-Object {
 
-                $Left = $Counter * $Width
+                $Left = $Counter * ($Spacing + $Width)
                 Write-Debug "Left: $($Left/$TPI)in ($($Left/$TPC)cm)"
     
                 # capture current field
