@@ -237,8 +237,14 @@ PS> Import-Module PsCrystal
 
 ## Manually
 
+
+* Save the latest release (a ZIP file) to workstation
+* Decompress archive
+* Rename directory to `PsCrystal`
+* Move directory to `~\Documents\WindowsPowerShell\Modules`
+* Unblock the module's files
 ```powershell
-TODO
+PS> Get-ChildItem -Path ~\Documents\WindowsPowerShell\Modules\PsCrystal -Recurse | Unblock-File
 ```
 
 # Personnel
