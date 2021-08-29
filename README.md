@@ -105,17 +105,36 @@ PS> Get-ChildItem '\path\to\reports' *.rpt -Recurse | Open-Report -Verbose | % {
 
 ```powershell
 # extract the fields from the RPT files in the specified directory and save them in a single CSV file
-PS> Get-ChildItem 'path\to\reports' *.rpt -Recurse | % {
-    $report = $_
+PS> Get-ChildItem 'path\to\reports' *.rpt -Recurse | ForEach-Object {
 
-    # TODO
+   $Report = $_
 
-    $_.Subreports | % {
-        $subreport = $_
-	
-	# TODO
+    $Report.Database.Tables.Fields | Where-Object {$.UseCount -gt 0} | ForEach-Object { 
 
-    } # /Subreports
+        [PsCustomObject]@{
+            FileName = (Split-Path $Report.FilePath -Leaf)
+            Name = 'Main'
+            Table = $_.TableName
+            Field = $_.Name
+        }
+
+    }
+
+    $Report.Subreports | ForEach-Object {
+
+        $Subreport = $
+
+        $_.Database.Tables.Fields | Where-Object {$.UseCount -gt 0} | ForEach-Object {
+
+            [PsCustomObject]@{
+                FileName = (Split-Path $Report.FilePath -Leaf)
+                Name = $Subreport.Name
+                Table = $_.TableName
+                Field = $_.Name
+            }
+
+        }
+    }
     
 } | ConvertTo-Csv -NoTypeInformation | Out-File ~\Desktop\reports.fields.csv
 ```
